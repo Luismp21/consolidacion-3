@@ -1,88 +1,112 @@
-let arregloGasto = [];
+const arregloGasto = [];
+let objetoPresupuesto = {};
 
-
-function ObjetoGasto(nombreGasto, cantidadGasto) {
-  this.nombreGasto = nombreGasto;
-  this.cantidadGasto = cantidadGasto;
-}
-
-function obtenerDatosGasto() {
-  let btnGasto = document.querySelector("#agregarGasto");
-
-  btnGasto.addEventListener("click", () => {
-    let nombreGasto = document.querySelector("#nombreGasto").value;
-    let cantidadGasto = parseInt(document.querySelector("#datoGasto").value);
-
-    //  let objetoGasto = {
-    //   nombreGasto,
-    //   cantidadGasto,
-    // };
-    // console.log(objetoGasto);
-
-    // dato = arregloGasto.indexOf(objetoGasto)
-    // console.log(dato);
-    // if(dato == -1){
-    //   arregloGasto.push(objetoGasto)
-    //   console.log(arregloGasto);
-    // }else{
-    //   console.log("No se agrego al arreglo");
-    // }
-   
-
-    let gasto = new ObjetoGasto(nombreGasto, cantidadGasto);
-    // validar = arregloGasto.includes(gasto)
-    // console.log(validar);
-
-    // arregloGasto.push(gasto)
-    // console.log(validar);
-    // if(arregloGasto.includes(gasto)){
-    //   console.log("Si lo incluye");
-    // }else{
-    //   console.log("no lo incluye");
-    //   arregloGasto.push(gasto)
-    //   console.log(arregloGasto);
-    // }
-    renderizarDatos([gasto]);
+const infoPresupuesto = () => {
+  const btnCalcularPresupuesto = document.querySelector("#calcularPresupuesto");
+  btnCalcularPresupuesto.addEventListener("click", () => {
+    const datoPresupuesto = parseInt(
+      document.querySelector("#datoPresupuesto").value
+    );
+    objetoPresupuesto = {
+      presupuesto: datoPresupuesto,
+      gastos: 0,
+      saldo: datoPresupuesto,
+    };
+    console.log(objetoPresupuesto);
+    btnCalcularPresupuesto.disabled = true;
+    renderizarPresupuesto(objetoPresupuesto);
   });
-}
+};
 
-function renderizarDatos(gasto) {
+const renderizarPresupuesto = (objetoPresupuesto) => {
+  let tablaBodyPresupuesto = document.querySelector("#tablaBodyPresupuesto");
+  let tablaRowBodyPresupuesto = document.createElement("tr");
+  let tablaColNombrePresupuesto = document.createElement("th");
+  let tablaColGasto = document.createElement("th");
+  let tablaColSaldo = document.createElement("th");
+
+  tablaColNombrePresupuesto.setAttribute("id", "ingresarPresupuesto");
+  tablaColGasto.setAttribute("id", "ingresarPresupuestoGasto");
+  tablaColSaldo.setAttribute("id", "ingresarSaldo");
+
+  tablaColNombrePresupuesto.setAttribute(
+    "value",
+    `$${objetoPresupuesto.presupuesto}`
+  );
+  tablaColGasto.setAttribute("value", `$${objetoPresupuesto.gastos}`);
+  tablaColSaldo.setAttribute("value", `$${objetoPresupuesto.saldo}`);
+
+  tablaColNombrePresupuesto.innerHTML = `$${objetoPresupuesto.presupuesto}`;
+  tablaColGasto.innerHTML = `$${objetoPresupuesto.gastos}`;
+  tablaColSaldo.innerHTML = `$${objetoPresupuesto.saldo}`;
+
+  tablaRowBodyPresupuesto.append(
+    tablaColNombrePresupuesto,
+    tablaColGasto,
+    tablaColSaldo
+  );
+  tablaBodyPresupuesto.append(tablaRowBodyPresupuesto);
+};
+
+const infoGasto = () => {
+  const btnCalcularGasto = document.querySelector("#agregarGasto");
+  btnCalcularGasto.addEventListener("click", () => {
+    const nombreGasto = document.querySelector("#nombreGasto").value;
+    const cantidadGasto = parseInt(document.querySelector("#datoGasto").value);
+    let objetoGasto = {
+      nombreGasto,
+      cantidadGasto,
+    };
+    renderizarDatosGasto([objetoGasto]);
+    arregloGasto.push(objetoGasto);
+    console.log(arregloGasto);
+  });
+};
+
+function renderizarDatosGasto(gasto) {
   gasto.forEach((datoGasto) => {
-    // if(arregloGasto.includes(datoGasto)){
-    //   console.log("Si lo incluye");
-    // }else{
-    //   console.log("no lo incluye");
-    //   arregloGasto.push(datoGasto)
-    //   console.log(arregloGasto);
-    // }
-
+    console.log(datoGasto);
     let tablaBodyGasto = document.querySelector("#tablaBodyGasto");
-
     let tablaRowBodyGasto = document.createElement("tr");
     let tablaColNombreGasto = document.createElement("th");
     let tablaColValor = document.createElement("th");
     let tablaColEliminar = document.createElement("th");
+    let btnEliminar = document.createElement("button");
 
-    tablaColNombreGasto.setAttribute("id", "gastoComida");
+    tablaRowBodyGasto.setAttribute("id", `${datoGasto.nombreGasto}`);
+    tablaColNombreGasto.setAttribute("class", "ingresarGastoComida");
+    tablaColValor.setAttribute("class", "ingresarGastoValor");
+    tablaColEliminar.setAttribute("class", "ingresarBtnEliminar");
 
-    var estado = arregloGasto.indexOf(datoGasto);
-    console.log(datoGasto);
-    console.log(estado);
-    console.log(arregloGasto);
-    if(estado == -1){
-      arregloGasto.push(datoGasto);
-    console.log(arregloGasto);
+    // btnEliminar.setAttribute("class", "btnEliminar");
 
-} else {
-    console.log("No se agrego");
-    
-}
+    tablaColValor.setAttribute("value", `${datoGasto.cantidadGasto}`);
+
+    let tablaColGasto = document.querySelector("#ingresarPresupuestoGasto");
+    let tablaColSaldo = document.querySelector("#ingresarSaldo");
+
+    objetoPresupuesto.gastos += datoGasto.cantidadGasto;
+    objetoPresupuesto.saldo = objetoPresupuesto.saldo - datoGasto.cantidadGasto;
+
+    tablaColGasto.value = objetoPresupuesto.gastos;
+    tablaColGasto.innerHTML = `$${objetoPresupuesto.gastos}`;
+
+    tablaColSaldo.value = objetoPresupuesto.saldo;
+    tablaColSaldo.innerHTML = `$${objetoPresupuesto.saldo}`;
+
+    console.log(objetoPresupuesto.gastos);
 
     tablaColNombreGasto.innerHTML = `${datoGasto.nombreGasto}`;
     tablaColValor.innerHTML = `$ ${datoGasto.cantidadGasto}`;
-    tablaColEliminar.innerHTML = "";
+    btnEliminar.innerHTML = "Borrar";
+
+    btnEliminar.addEventListener("click", (e) => {
+      e.target.parentNode.parentNode.remove();
+      arregloGasto.splice(arregloGasto.indexOf(gasto), 1);
+    });
 
     tablaBodyGasto.append(tablaRowBodyGasto);
+    tablaColEliminar.append(btnEliminar);
     tablaRowBodyGasto.append(
       tablaColNombreGasto,
       tablaColValor,
@@ -91,115 +115,7 @@ function renderizarDatos(gasto) {
   });
 }
 
-obtenerDatosGasto();
-// renderizarDatos()
-// let arregloPresupuesto = [];
-// let arregloGasto = [];
-// let saldo;
 
-// function capturarDatosPresupuesto() {
-//   let btnCalcularPresupuesto = document.querySelector("#calcularPresupuesto");
 
-//   btnCalcularPresupuesto.addEventListener("click", () => {
-//     let presupuesto = parseInt(
-//       document.querySelector("#datoPresupuesto").value
-//     );
-//     obtenerPresupuesto(presupuesto);
-//   });
-// }
-
-// function capturarDatosGastos() {
-//   let btnAgregarGasto = document.querySelector("#agregarGasto");
-
-//   btnAgregarGasto.addEventListener("click", () => {
-//     let nombreGasto = document.querySelector("#nombreGasto").value;
-//     let cantidadGasto = parseInt(document.querySelector("#datoGasto").value);
-
-//     let objetoGasto = {
-//       nombreGasto,
-//       cantidadGasto,
-//     };
-
-//     obtenerGasto([objetoGasto]);
-//   });
-// }
-
-// function obtenerPresupuesto(datosPresupuesto) {
-//   arregloPresupuesto.push(datosPresupuesto);
-
-//   arregloPresupuesto.forEach((presupuesto) => {
-//     saldo = presupuesto;
-//     let tablaBodyPresupuesto = document.querySelector("#tablaBodyPresupuesto");
-
-//     let tablaRowBodyPresupuesto = document.createElement("tr");
-//     let tablaColPresupuesto = document.createElement("th");
-//     let tablaColGasto = document.createElement("th");
-//     let tablaColSaldo = document.createElement("th");
-
-//     tablaColSaldo.setAttribute("id", "saldoRow");
-
-//     tablaColPresupuesto.innerHTML = `$ ${presupuesto}`;
-//     tablaColGasto.innerHTML = "";
-//     tablaColSaldo.innerHTML = `$ ${saldo}`;
-
-//     tablaBodyPresupuesto.append(tablaRowBodyPresupuesto);
-//     tablaRowBodyPresupuesto.append(
-//       tablaColPresupuesto,
-//       tablaColGasto,
-//       tablaColSaldo
-//     );
-//   });
-// }
-
-// function obtenerGasto(datosGastos) {
-//   console.log(datosGastos);
-//   datosGastos.forEach((gasto) => {
-//     console.log(gasto);
-//     console.log(arregloGasto);
-//     let tablaBodyGasto = document.querySelector("#tablaBodyGasto");
-
-//     let tablaRowBodyGasto = document.createElement("tr");
-//     let tablaColNombreGasto = document.createElement("th");
-//     let tablaColValor = document.createElement("th");
-//     let tablaColEliminar = document.createElement("th");
-
-//     tablaColNombreGasto.setAttribute("id", "gastoComida");
-
-//     // tablaColNombreGasto.innerHTML = `${gasto.nombreGasto}`;
-//     // tablaColValor.innerHTML = `$ ${gasto.cantidadGasto}`;
-//     // tablaColEliminar.innerHTML = "";
-
-//     tablaBodyGasto.append(tablaRowBodyGasto);
-//     tablaRowBodyGasto.append(
-//       tablaColNombreGasto,
-//       tablaColValor,
-//       tablaColEliminar
-//     );
-
-//     dato = arregloGasto.indexOf(gasto)
-//     console.log(dato);
-
-//   });
-// }
-
-// capturarDatosPresupuesto();
-// capturarDatosGastos();
-
-/*   // saldo = arregloPresupuesto[0] - gasto.cantidadGasto;
-  console.log(arregloGasto);
-  if (saldoRow) {
-    saldoRow.innerHTML = saldo;
-    dato = arregloGasto.indexOf(gasto);
-    console.log(gasto);
-    console.log(dato);
-    if (dato == -1) {
-      arregloGasto.push(gasto);
-      console.log(arregloGasto);
-      tablaColNombreGasto.innerHTML = `${gasto.nombreGasto}`;
-      tablaColValor.innerHTML = `$ ${gasto.cantidadGasto}`;
-      tablaColEliminar.innerHTML = "";
-      console.log("lo agrego");
-    }
-  } else {
-    console.log("No lo agrego");
-  } */
+infoPresupuesto();
+infoGasto();
